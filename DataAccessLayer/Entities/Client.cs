@@ -1,4 +1,6 @@
-﻿namespace DataAccessLayer.Entities.Base
+﻿using DataAccessLayer.Entities.Base;
+
+namespace DataAccessLayer.Entities
 {
     public class Client : NamedEntity
     {
