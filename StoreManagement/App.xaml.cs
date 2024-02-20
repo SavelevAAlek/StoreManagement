@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using StoreManagement.Data;
 using StoreManagement.ViewModels;
+using System.Windows;
 
 namespace StoreManagement
 {
@@ -17,9 +19,20 @@ namespace StoreManagement
         public static IServiceProvider Services => Host.Services;
 
         internal static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
+            .AddDatabase(host.Configuration.GetSection("Database"))
             .AddViewModels()
             ;
 
+        protected override async void OnStartup(StartupEventArgs e)
+        {
+            var host = Host;
+
+            using (var scope = Services.CreateScope())
+                scope.ServiceProvider.GetRequiredService<DbInitializer>().InitializeAsync().Wait();
+
+            base.OnStartup(e);
+            await host.StartAsync();
+        }
     }
 
 }
